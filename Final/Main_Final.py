@@ -1,8 +1,7 @@
-from tkinter import *
-from tkinter import ttk
-import tkinter
-from Maths_Prob import probability_of_char_list
 import turtle
+import tkinter
+from tkinter import *
+from Maths_Prob import probability_of_char_list
 
 def n_frequent_character(n):
     global char_count
@@ -53,7 +52,6 @@ def n_frequent_character(n):
     N_ofhighestvalues(n)
     return most_frequent_char
 
-
 main_window = tkinter.Tk() #creates main windows where loop takes places
 main_window.geometry("600x600")
 
@@ -61,7 +59,6 @@ main_window.title('Main Window Test')
 
 main_window.columnconfigure(0,weight=1)
 main_window.columnconfigure(3,weight=1)
-
 
 def retrieve_input(): # retrieves input from name_label_entry
     try:
@@ -72,7 +69,6 @@ def retrieve_input(): # retrieves input from name_label_entry
     except ValueError:
         return 'Please input a number'
 
-        
 main_window_label = Label(main_window,text='This is the main window')
 collect_n_label = Label(main_window, text ='insert # of most frequent chracters to search for: ')
 collect_n_label.grid(column=0,row=1,columnspan=2)
@@ -122,25 +118,44 @@ def pie_math(most_frequent_char,n):
 
 def draw_graph(most_frequent_char_area):
 
+    color_list=[]
     canvas = tkinter.Canvas(master=main_window,heigh=550,width=600)
     canvas.grid(column=0,row=4,columnspan=4)
     draw = turtle.RawTurtle(canvas)
-    
-    draw.pencolor('black')
 
+    def draw_move(action):
+        if action == 'tp_orgin':
+            draw.penup()
+            draw.setposition(x=0,y=0)
+        else:
+            pass
+
+    def draw_tri(most_frequent_char_area):
+        for i in most_frequent_char_area:
+            draw_move('tp_orgin')
+            draw.pendown()
+            draw.forward(150)
+            draw_move('tp_orgin')
+            draw.right(i[1])
+            draw.pendown()
+            draw.forward(150)
+            draw_move('tp_orgin')
+    
     draw.penup()
     draw.right(90)
     draw.forward(150)
-
     
     draw.left(90)
+    draw.fillcolor('#abafb0') #light gray
+    draw.begin_fill()
     draw.pendown()
-    draw.circle(100)
-    
-    
+    draw.circle(150)
+    draw_move('tp_orgin')
+
     draw.left(90)
-    draw.forward(100)
-    print(draw.pos())
+    draw.fillcolor('#04939c') #lightblue
+    draw.begin_fill()
+    draw_tri(most_frequent_char_area)
 
     #turtle.write(arg, move=False, align=’left’, font=(‘Arial’, 8, ‘normal’)) 
 
@@ -153,7 +168,6 @@ def initiate():
     print('char and area taken of 360',most_frequent_char_area)
     draw_graph(most_frequent_char_area)
     
-
 proceed_button = Button(main_window, text ='Submit',width= 40,command=lambda: initiate()) # submits input taken from name_label_entry sends to terminal retrieve_input()
 proceed_button.grid(column=0,row=2,columnspan=2)
 end_button = Button(main_window, text ='End',width= 40,command=lambda: main_window.destroy() ) # closes window 

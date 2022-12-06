@@ -1,60 +1,142 @@
 import turtle
 import tkinter
 from tkinter import *
-from Maths_Prob import probability_of_char_list
+from Maths_Prob import probability_of_all_characters_list
 
 def n_frequent_character(n):
-    global char_count
+    global character_appearances
 
-    temp_file = open('Final/Word.txt','a+') # opens word.txt assigns to temp_file in a+ mode
-    temp_file.seek(0) # goes to the start of word.txt file
-    #print(temp_file.read()) # prints the whole word.txt file
+    word_file = open('Final/Word.txt','a+') # opens word.txt assigns to word_file in a+ mode
+    word_file.seek(0) # goes to the start of word.txt file
 
-    char_track = [] # holds all characters from temp_file
-    # loop to iterate through temp_file and append each char to char_track
-    for line in temp_file: 
+    characters_in_file = [] # holds all characters from word_file
+    # loop to iterate through word_file and append each char to characters_in_file
+    for line in word_file: 
         line = line.lower()
-        #print(line)
         for character in line:
             if character == '\n': #special case for \n 
-                char_track.append('\ n')
+                characters_in_file.append('\ n')
             elif character != '\n':
-                char_track.append(character)
+                characters_in_file.append(character)
 
-    char_count = dict() # holds num of appearances of chars
-    # iterates through char_track and counts appearances of every char saves to char_count
-    for i in char_track:
-        char_count[i]=char_count.get(i,0)+1
-    #print('char count is',char_count)
+    character_appearances_dict = dict() # holds character and number of apperances
+    # iterates through characters_in_file and counts appearances of every char saves to character_appearances
+    for i in characters_in_file: 
+        character_appearances_dict[i]=character_appearances_dict.get(i,0)+1
 
-    char_count_list = [] # holds letter and value (let,val) in tuple pair in list value=frequencey of letter
-    maxval = n
-    for i in char_count: # convert char_counts from dic to list
-        #print(i,"is seen",char_count[i],"times")
-        let,val = i,char_count[i]
-        letandval = (let,val)
-        char_count_list.append(letandval)
+    character_appearances_list = [] # holds letter and value (let,val) in tuple pair in list value=appearances of letter
+    for i in character_appearances_dict: # converts character_appearances from dict to list
+        letter,appearances = i,character_appearances_dict[i]
+        letter_and_appearances = (letter,appearances)
+        character_appearances_list.append(letter_and_appearances)
 
-    def sortbykey(elem): # sorts cc_list by frequency of characters lowest to highest
+    def sortbykey(elem): # sorts character_appearances_list by frequency of characters lowest to highest
         return elem[1]
-    char_count_list.sort(key=sortbykey)
-    #print(cc_list) # check to see if cc_list was sorted
+    character_appearances_list.sort(key=sortbykey)
     
-    most_frequent_char =[] # hold most frequent characters 
-    def N_ofhighestvalues(n):
+    n_most_frequent_characters =[] # hold most frequent characters 
+    def N_ofhighestvalues(n): # get n(number) of highest value chracters in list
         temp_start = -1
         while n != 0:
-            char = char_count_list[temp_start][0]
-            most_frequent_char.append(char)
+            char = character_appearances_list[temp_start][0]
+            n_most_frequent_characters.append(char)
             temp_start = temp_start - 1
             n = int(n) - 1
 
     N_ofhighestvalues(n)
-    return most_frequent_char
+    return n_most_frequent_characters
+
+def pie_math(n_most_frequent_characters,n):
+    def sortbykey(elem): # sorts cc_list by frequency of characters lowest to highest
+        return elem[1]
+
+    update_probability_of_char_list = probability_of_all_characters_list
+    update_probability_of_char_list.sort(key=sortbykey) # sorts characters and theyre probability lowest to highest
+
+    total_circle_degree = 360
+    total_prob = 1.0
+    #total_n_prob = 0.0
+
+    n_most_frequent_characters_prob = [] # hold most frequent characters and theyre probabilty
+    def N_ofhighestvalues(n): # get n(number) of highest value chracters in list and theyre probability
+        temp_start = -1
+        while n != 0:
+            character = update_probability_of_char_list[temp_start][0]
+            probability = update_probability_of_char_list[temp_start][1]
+            character_and_probability = character,probability
+            n_most_frequent_characters_prob.append(character_and_probability)
+            temp_start = temp_start - 1
+            n = int(n) - 1
+    N_ofhighestvalues(n)
+
+    #for i in n_most_frequent_characters_prob:
+        #total_n_prob = total_n_prob + i[1]
+
+    n_most_frequent_characters_angle = []
+    for i in n_most_frequent_characters_prob:
+        item_angle = (i[1]/total_prob) * total_circle_degree
+        character = i[0]
+        angle = item_angle
+        character_and_angle = character,angle
+        n_most_frequent_characters_angle.append(character_and_angle)
+
+    return n_most_frequent_characters_angle
+
+def draw_graph(n_most_frequent_characters_angle):
+    canvas = tkinter.Canvas(master=main_window,heigh=550,width=600)
+    canvas.grid(column=0,row=4,columnspan=4)
+    draw = turtle.RawTurtle(canvas)
+    color_palette = ['#c3d608','#328cc1','#0b3c5d','#1d2731','#ff3636']
+    radius = 180
+    def draw_move(action):
+        if action == 'tp_orgin':
+            draw.penup()
+            draw.setposition(x=0,y=0)
+        else:
+            pass
+
+    def draw_tri(n_most_frequent_characters_angle):
+        for i in n_most_frequent_characters_angle:
+            print(i[1])
+            draw_move('tp_orgin')
+            draw.pendown()
+            draw.forward(180)
+            print(i,'1',draw.pos())
+            draw_move('tp_orgin')
+            draw.right(i[1])
+            draw.pendown()
+            draw.forward(180)
+            print(i,'2',draw.pos())
+            draw_move('tp_orgin')
+    
+    draw.penup()
+    draw.right(90)
+    draw.forward(180)
+    
+    draw.color('black','#abafb0')
+    draw.left(90)
+    draw.begin_fill()
+    draw.pendown()
+    draw.circle(radius)
+    draw.end_fill()
+    draw_move('tp_orgin')
+
+    draw.left(90)
+    draw_tri(n_most_frequent_characters_angle)
+
+    draw.write('Test',font=('Calibri',12,'normal'))
+
+def initiate():
+    n_most_frequent_characters , inputValue = retrieve_input()
+    n_most_frequent_characters_angle = pie_math(n_most_frequent_characters,inputValue)
+    print('character and angle',n_most_frequent_characters_angle)
+    try:
+        draw_graph(n_most_frequent_characters_angle)
+    except tkinter.TclError:
+        print('Ended window before finishing drawing')
 
 main_window = tkinter.Tk() #creates main windows where loop takes places
 main_window.geometry("600x600")
-
 main_window.title('Main Window Test') 
 
 main_window.columnconfigure(0,weight=1)
@@ -63,9 +145,8 @@ main_window.columnconfigure(3,weight=1)
 def retrieve_input(): # retrieves input from name_label_entry
     try:
         inputValue = collect_n_label_entry.get()
-        most_frequent_char = n_frequent_character(inputValue)
-        return most_frequent_char , inputValue
-
+        n_most_frequent_characters = n_frequent_character(inputValue)
+        return n_most_frequent_characters , inputValue
     except ValueError:
         return 'Please input a number'
 
@@ -74,104 +155,10 @@ collect_n_label = Label(main_window, text ='insert # of most frequent chracters 
 collect_n_label.grid(column=0,row=1,columnspan=2)
 collect_n_label_entry = Entry(main_window,width=30) #takes input
 collect_n_label_entry.grid(column=2,row=1,columnspan=2)
-
-def pie_math(most_frequent_char,n):
-
-    def sortbykey(elem): # sorts cc_list by frequency of characters lowest to highest
-        return elem[1]
-
-    up_probability_of_char_list = probability_of_char_list
-    up_probability_of_char_list.sort(key=sortbykey)
-    #print('after sort',up_probability_of_char_list) # check to see if probability_of_char_list was sorted
-
-    total_circle_degree = 360
-    total_prob = 1.0
-    total_n_prob = 0.0
-
-    most_frequent_char_prob = [] # hold most frequent characters and theyre probabilty
-    def N_ofhighestvalues(n):
-        temp_start = -1
-        while n != 0:
-            char = up_probability_of_char_list[temp_start][0]
-            prob = up_probability_of_char_list[temp_start][1]
-            letandval = char,prob
-            most_frequent_char_prob.append(letandval)
-            temp_start = temp_start - 1
-            n = int(n) - 1
-    N_ofhighestvalues(n)
-    #print(most_frequent_char_prob,'in pie_math in initiate')
-
-    for i in most_frequent_char_prob:
-        total_n_prob = total_n_prob + i[1]
-    #print(total_n_prob,'in pie_math in initiate')
-
-    most_frequent_char_area = []
-    for i in most_frequent_char_prob:
-        item_total_area_taken = (i[1]/total_prob) * total_circle_degree
-        #print('item takes up',item_total_area_taken,'of',total_circle_degree)
-        char = i[0]
-        area = item_total_area_taken 
-        letandval = char,area
-        most_frequent_char_area.append(letandval)
-
-    return most_frequent_char_area
-
-def draw_graph(most_frequent_char_area):
-
-    color_list=[]
-    canvas = tkinter.Canvas(master=main_window,heigh=550,width=600)
-    canvas.grid(column=0,row=4,columnspan=4)
-    draw = turtle.RawTurtle(canvas)
-
-    def draw_move(action):
-        if action == 'tp_orgin':
-            draw.penup()
-            draw.setposition(x=0,y=0)
-        else:
-            pass
-
-    def draw_tri(most_frequent_char_area):
-        for i in most_frequent_char_area:
-            draw_move('tp_orgin')
-            draw.pendown()
-            draw.forward(150)
-            draw_move('tp_orgin')
-            draw.right(i[1])
-            draw.pendown()
-            draw.forward(150)
-            draw_move('tp_orgin')
     
-    draw.penup()
-    draw.right(90)
-    draw.forward(150)
-    
-    draw.left(90)
-    draw.fillcolor('#abafb0') #light gray
-    draw.begin_fill()
-    draw.pendown()
-    draw.circle(150)
-    draw_move('tp_orgin')
-
-    draw.left(90)
-    draw.fillcolor('#04939c') #lightblue
-    draw.begin_fill()
-    draw_tri(most_frequent_char_area)
-
-    #turtle.write(arg, move=False, align=’left’, font=(‘Arial’, 8, ‘normal’)) 
-
-def initiate():
-
-    most_frequent_char , inputValue = retrieve_input()
-    #print(most_frequent_char,'in initiate')
-    #print(inputValue,'in initiate')
-    most_frequent_char_area = pie_math(most_frequent_char,inputValue)
-    print('char and area taken of 360',most_frequent_char_area)
-    draw_graph(most_frequent_char_area)
-    
-proceed_button = Button(main_window, text ='Submit',width= 40,command=lambda: initiate()) # submits input taken from name_label_entry sends to terminal retrieve_input()
-proceed_button.grid(column=0,row=2,columnspan=2)
+submit_button = Button(main_window, text ='Submit',width= 40,command=lambda: initiate()) # submits input taken from name_label_entry sends to terminal retrieve_input()
+submit_button.grid(column=0,row=2,columnspan=2)
 end_button = Button(main_window, text ='End',width= 40,command=lambda: main_window.destroy() ) # closes window 
 end_button.grid(column=2,row=2,columnspan=2)
 
 main_window.mainloop() #starts main window until closed
-

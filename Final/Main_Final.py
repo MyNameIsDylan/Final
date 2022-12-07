@@ -1,6 +1,6 @@
 import turtle
 import tkinter
-from tkinter import *
+from tkinter import Label,Entry,Button
 from Maths_Prob import probability_of_all_characters_list
 
 def n_frequent_character(n):
@@ -83,48 +83,63 @@ def pie_math(n_most_frequent_characters,n):
     return n_most_frequent_characters_angle
 
 def draw_graph(n_most_frequent_characters_angle):
-    canvas = tkinter.Canvas(master=main_window,heigh=550,width=600)
-    canvas.grid(column=0,row=4,columnspan=4)
+    canvas = tkinter.Canvas(master=main_window,heigh=550,width=600) # creates canvas inside of main_window with sepcified height and width
+    canvas.grid(column=0,row=4,columnspan=4) # specifies where canvas is located based on grid format
     draw = turtle.RawTurtle(canvas)
-    color_palette = ['#c3d608','#328cc1','#0b3c5d','#1d2731','#ff3636']
-    radius = 180
+    draw.speed(0)
+    color_palette = ['#c3d608','#328cc1','#0b3c5d','#1d2731','#ff3636','#','#','#','#','#']
     def draw_move(action):
         if action == 'tp_orgin':
-            draw.penup()
             draw.setposition(x=0,y=0)
         else:
             pass
+    def draw_tri():
+        color_track = 1
+        for item in n_most_frequent_characters_angle:
+            if item != n_most_frequent_characters_angle[0]:
+                draw.color('black',color_palette[color_track])
+                draw.begin_fill()
+                draw.pendown()
+                draw.setposition(x1,y1)
+                for j in range(int(item[1])):
+                    draw.pendown()
+                    draw.forward(3)
+                    draw.right(1)
+                x1,y1 = draw.pos()
+                draw_move('tp_orgin')
+                draw.end_fill()
+                color_track = color_track + 1
+            elif item == n_most_frequent_characters_angle[0]:  
+                draw.setheading(90)
+                draw.color('black',color_palette[0])
+                draw.begin_fill()
+                draw.pendown()
+                draw.forward(180) # go to top of circle
+                draw.right(90) # turn right face east
+                for j in range(int(item[1])):
+                    draw.pendown()
+                    draw.forward(3)
+                    draw.right(1)
+                x1,y1 = draw.pos()
+                draw_move('tp_orgin')
+                draw.end_fill()
 
-    def draw_tri(n_most_frequent_characters_angle):
-        for i in n_most_frequent_characters_angle:
-            print(i[1])
-            draw_move('tp_orgin')
-            draw.pendown()
-            draw.forward(180)
-            print(i,'1',draw.pos())
-            draw_move('tp_orgin')
-            draw.right(i[1])
-            draw.pendown()
-            draw.forward(180)
-            print(i,'2',draw.pos())
-            draw_move('tp_orgin')
-    
     draw.penup()
-    draw.right(90)
-    draw.forward(180)
-    
-    draw.color('black','#abafb0')
     draw.left(90)
+    draw.forward(180) 
+    draw.color('black','#dee2e6')
+    draw.right(90)
     draw.begin_fill()
     draw.pendown()
-    draw.circle(radius)
+    for i in range(360):
+        draw.pendown()
+        draw.forward(3)
+        draw.right(1)
     draw.end_fill()
     draw_move('tp_orgin')
+    draw_tri()
 
-    draw.left(90)
-    draw_tri(n_most_frequent_characters_angle)
-
-    draw.write('Test',font=('Calibri',12,'normal'))
+    #draw.write('Test',font=('Calibri',12,'normal')) you would use this to label the chart
 
 def initiate():
     n_most_frequent_characters , inputValue = retrieve_input()
@@ -136,8 +151,8 @@ def initiate():
         print('Ended window before finishing drawing')
 
 main_window = tkinter.Tk() #creates main windows where loop takes places
-main_window.geometry("600x600")
-main_window.title('Main Window Test') 
+main_window.geometry("600x600") # sets height and width of main_window
+main_window.title('Main Window Test') # set name of main_window
 
 main_window.columnconfigure(0,weight=1)
 main_window.columnconfigure(3,weight=1)
@@ -153,8 +168,8 @@ def retrieve_input(): # retrieves input from name_label_entry
 main_window_label = Label(main_window,text='This is the main window')
 collect_n_label = Label(main_window, text ='insert # of most frequent chracters to search for: ')
 collect_n_label.grid(column=0,row=1,columnspan=2)
-collect_n_label_entry = Entry(main_window,width=30) #takes input
-collect_n_label_entry.grid(column=2,row=1,columnspan=2)
+collect_n_label_entry = Entry(main_window,width=30) # creates and takes input
+collect_n_label_entry.grid(column=2,row=1,columnspan=2) 
     
 submit_button = Button(main_window, text ='Submit',width= 40,command=lambda: initiate()) # submits input taken from name_label_entry sends to terminal retrieve_input()
 submit_button.grid(column=0,row=2,columnspan=2)

@@ -6,7 +6,7 @@ from Maths_Prob import probability_of_all_characters_list
 def n_frequent_character(n):
     global character_appearances
 
-    word_file = open('Final/Word.txt','a+') # opens word.txt assigns to word_file in a+ mode
+    word_file = open('Final\Word.txt','a+') # opens word.txt assigns to word_file in a+ mode
     word_file.seek(0) # goes to the start of word.txt file
 
     characters_in_file = [] # holds all characters from word_file
@@ -55,7 +55,6 @@ def pie_math(n_most_frequent_characters,n):
 
     total_circle_degree = 360
     total_prob = 1.0
-    #total_n_prob = 0.0
 
     n_most_frequent_characters_prob = [] # hold most frequent characters and theyre probabilty
     def N_ofhighestvalues(n): # get n(number) of highest value chracters in list and theyre probability
@@ -68,9 +67,8 @@ def pie_math(n_most_frequent_characters,n):
             temp_start = temp_start - 1
             n = int(n) - 1
     N_ofhighestvalues(n)
-
-    #for i in n_most_frequent_characters_prob:
-        #total_n_prob = total_n_prob + i[1]
+    
+    print('character and probability',n_most_frequent_characters_prob)
 
     n_most_frequent_characters_angle = []
     for i in n_most_frequent_characters_prob:

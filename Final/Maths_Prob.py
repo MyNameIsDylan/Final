@@ -41,5 +41,5 @@ def prob():
         letter,probability = i,round(probability_of_char,4)
         letter_and_probability = letter,probability
         probability_of_all_characters_list.append(letter_and_probability)
-
+        
 prob()

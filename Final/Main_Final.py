@@ -24,6 +24,8 @@ def n_frequent_character(n):
     for i in characters_in_file: 
         character_appearances_dict[i]=character_appearances_dict.get(i,0)+1
 
+    
+
     character_appearances_list = [] # holds letter and value (let,val) in tuple pair in list value=appearances of letter
     for i in character_appearances_dict: # converts character_appearances from dict to list
         letter,appearances = i,character_appearances_dict[i]
@@ -76,9 +78,15 @@ def pie_math(n_most_frequent_characters,n):
         character_and_angle = character,angle
         n_most_frequent_characters_angle.append(character_and_angle)
 
-    return n_most_frequent_characters_angle,n_most_frequent_characters_prob
+    other_characters_total_prob = 0.0
+    total = 0
+    for item in n_most_frequent_characters_prob:
+        total = total + item[1]
+    other_characters_total_prob = 1.0-total
 
-def draw_graph(n_most_frequent_characters_angle,n_most_frequent_characters_prob):
+    return n_most_frequent_characters_angle,n_most_frequent_characters_prob,other_characters_total_prob
+
+def draw_graph(n_most_frequent_characters_angle,n_most_frequent_characters_prob,other_characters_total_prob):
 
     canvas = tkinter.Canvas(master=main_window,heigh=550,width=600) # creates canvas inside of main_window with sepcified height and width
     canvas.grid(column=0,row=4,columnspan=4) # specifies where canvas is located based on grid format
@@ -136,31 +144,43 @@ def draw_graph(n_most_frequent_characters_angle,n_most_frequent_characters_prob)
     draw_move('tp_orgin')
     draw_tri()
 
+    prob_count = 0
     for item in n_most_frequent_characters_angle:
         draw.penup()
         draw_move('tp_orgin')
         draw.setheading(90)
+        current_write = item[0],n_most_frequent_characters_prob[prob_count][1]
         if item == n_most_frequent_characters_angle[0]:
             total_angle = item[1]
             original_placement = (item[1]/2)
             draw.right(original_placement)
             draw.forward(200)
-            draw.write(item[0],font=('Calibri',12,'normal'))
+            draw.write(current_write, font=('Calibri',11,'normal'))
+            prob_count = prob_count + 1
         elif item != n_most_frequent_characters_angle[0]:
             original_placement = total_angle + (item[1]/2)
             total_angle = total_angle + item[1]
             draw.right(original_placement)
             draw.forward(200)
-            draw.write(item[0],font=('Calibri',12,'normal'))
+            draw.write(current_write, font=('Calibri',11,'normal'))
+            prob_count = prob_count + 1
 
+    current_write = 'all other characters', other_characters_total_prob
+    draw.penup()
+    draw_move('tp_orgin')
+    draw.setheading(90)
+    draw.right(310)
+    draw.forward(290)
+    draw.write(current_write, font=('Calibri',11,'normal'))
+    
 
 def initiate():
     n_most_frequent_characters , inputValue = retrieve_input()
-    n_most_frequent_characters_angle,n_most_frequent_characters_prob = pie_math(n_most_frequent_characters,inputValue)
+    n_most_frequent_characters_angle,n_most_frequent_characters_prob,other_characters_total_prob = pie_math(n_most_frequent_characters,inputValue)
     print('character and probability',n_most_frequent_characters_prob)
     print('character and angle',n_most_frequent_characters_angle)
     try:
-        draw_graph(n_most_frequent_characters_angle,n_most_frequent_characters_prob)
+        draw_graph(n_most_frequent_characters_angle,n_most_frequent_characters_prob,other_characters_total_prob)
     except tkinter.TclError:
         print('Ended window before finishing drawing')
 

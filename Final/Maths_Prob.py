@@ -20,7 +20,6 @@ def prob():
         # iterates through characters_in_file and counts appearances of every char saves to character_appearances_dict
         for i in characters_in_file:
             character_appearances_dict[i]=character_appearances_dict.get(i,0)+1
-        #print('char count is',character_appearances_dict)
         
         return character_appearances_dict
 

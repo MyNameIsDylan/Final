@@ -3,6 +3,13 @@ import tkinter
 from tkinter import Label,Entry,Button
 from Maths_Prob import probability_of_all_characters_list
 
+def retrieve_input(): # retrieves input from name_label_entry
+    try:
+        inputValue = collect_n_label_entry.get()
+        return inputValue
+    except ValueError:
+        return 'Please input a number'
+
 def n_frequent_character(n):
     global character_appearances
 
@@ -24,13 +31,25 @@ def n_frequent_character(n):
     for i in characters_in_file: 
         character_appearances_dict[i]=character_appearances_dict.get(i,0)+1
 
-    
-
-    character_appearances_list = [] # holds letter and value (let,val) in tuple pair in list value=appearances of letter
+    character_appearances_list = [] # holds letter and appearances (let,appearances) in tuple pair in list value=appearances of letter
     for i in character_appearances_dict: # converts character_appearances from dict to list
         letter,appearances = i,character_appearances_dict[i]
         letter_and_appearances = (letter,appearances)
         character_appearances_list.append(letter_and_appearances)
+
+    nac = 0
+    for item in character_appearances_list:
+        if item[0] == '\\ n' or item[0] == ' ' or item[0] == ',' or item[0] == '.' or item[0] == ';':
+            nac = nac + item[1]
+        else:
+            pass
+    non_alphabetical_charcters = ('non_alphabetical_characters',nac)
+    for item in character_appearances_list:
+        if item[0] == '\\ n' or item[0] == ' ' or item[0] == ',' or item[0] == '.' or item[0] == ';':
+            character_appearances_list.remove(item)
+        else:
+            pass
+    character_appearances_list.append(non_alphabetical_charcters)
 
     def sortbykey(elem): # sorts character_appearances_list by frequency of characters lowest to highest
         return elem[1]
@@ -46,6 +65,7 @@ def n_frequent_character(n):
             n = int(n) - 1
 
     N_ofhighestvalues(n)
+    #print('n most frequent characters',n_most_frequent_characters)
     return n_most_frequent_characters
 
 def pie_math(n_most_frequent_characters,n):
@@ -54,9 +74,6 @@ def pie_math(n_most_frequent_characters,n):
 
     update_probability_of_char_list = probability_of_all_characters_list
     update_probability_of_char_list.sort(key=sortbykey) # sorts characters and theyre probability lowest to highest
-
-    total_circle_degree = 360
-    total_prob = 1.0
 
     n_most_frequent_characters_prob = [] # hold most frequent characters and theyre probabilty
     def N_ofhighestvalues(n): # get n(number) of highest value chracters in list and theyre probability
@@ -72,7 +89,7 @@ def pie_math(n_most_frequent_characters,n):
 
     n_most_frequent_characters_angle = []
     for i in n_most_frequent_characters_prob:
-        item_angle = round((i[1]/total_prob) * total_circle_degree,3)
+        item_angle = round((i[1]/1) * 360,3)
         character = i[0]
         angle = item_angle
         character_and_angle = character,angle
@@ -82,7 +99,7 @@ def pie_math(n_most_frequent_characters,n):
     total = 0
     for item in n_most_frequent_characters_prob:
         total = total + item[1]
-    other_characters_total_prob = 1.0-total
+    other_characters_total_prob = round(1.0-total,4)
 
     return n_most_frequent_characters_angle,n_most_frequent_characters_prob,other_characters_total_prob
 
@@ -92,7 +109,7 @@ def draw_graph(n_most_frequent_characters_angle,n_most_frequent_characters_prob,
     canvas.grid(column=0,row=4,columnspan=4) # specifies where canvas is located based on grid format
     draw = turtle.RawTurtle(canvas)
     draw.speed(0)
-    color_palette = ['#c3d608','#328cc1','#0b3c5d','#1d2731','#ff3636','#','#','#','#','#']
+    color_palette = ['#c3d608','#328cc1','#0b3c5d','#1d2731','#ff3636','#5B507A','#09BC8A','','','']
     def draw_move(action):
         if action == 'tp_orgin':
             draw.setposition(x=0,y=0)
@@ -169,13 +186,13 @@ def draw_graph(n_most_frequent_characters_angle,n_most_frequent_characters_prob,
     draw.penup()
     draw_move('tp_orgin')
     draw.setheading(90)
-    draw.right(310)
+    draw.right(308)
     draw.forward(290)
     draw.write(current_write, font=('Calibri',11,'normal'))
     
-
-def initiate():
-    n_most_frequent_characters , inputValue = retrieve_input()
+def initiate(): #run all necesary functions when submit is clicked by the user
+    inputValue = retrieve_input()
+    n_most_frequent_characters = n_frequent_character(inputValue)
     n_most_frequent_characters_angle,n_most_frequent_characters_prob,other_characters_total_prob = pie_math(n_most_frequent_characters,inputValue)
     print('character and probability',n_most_frequent_characters_prob)
     print('character and angle',n_most_frequent_characters_angle)
@@ -190,14 +207,6 @@ main_window.title('Main Window Test') # set name of main_window
 
 main_window.columnconfigure(0,weight=1)
 main_window.columnconfigure(3,weight=1)
-
-def retrieve_input(): # retrieves input from name_label_entry
-    try:
-        inputValue = collect_n_label_entry.get()
-        n_most_frequent_characters = n_frequent_character(inputValue)
-        return n_most_frequent_characters , inputValue
-    except ValueError:
-        return 'Please input a number'
 
 main_window_label = Label(main_window,text='This is the main window')
 collect_n_label = Label(main_window, text ='insert # of most frequent chracters to search for: ')
